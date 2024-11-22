@@ -8,7 +8,7 @@ import (
 func main() {
 	graph, err := service.CallGraph("/Users/silhouette/work-practice/gin-example")
 	if err != nil {
-		fmt.Printf("createSsaCallGraph error %v\n", err)
+		fmt.Printf("createSsaCallGraph CallGraph error %v\n", err)
 		return
 	}
 	fmt.Printf("createSsaCallGraph callGraph: %v\n", graph)
