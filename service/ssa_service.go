@@ -121,7 +121,10 @@ func getRepoUsedFuncMap(pkgs []*packages.Package, rootPkg, rootDir string) map[s
 		if !isCurrentRepoFunc(pkg.PkgPath, rootPkg) {
 			continue
 		}
+		// packages.Package.Fset 字段是一个 *token.FileSet 类型，它用于跟踪源文件中的位置信息。
+		// 具体来说，Fset 包含了通过 packages 包加载的所有文件的信息，但它并不直接包含所有使用到的文件的集合。
 		pkg.Fset.Iterate(func(file *token.File) bool {
+			fmt.Printf("-------pkg %s, %s file %s\n", pkg.Name, pkg.PkgPath, file.Name())
 			if !strings.HasPrefix(file.Name(), rootDir) {
 				return true
 			}
