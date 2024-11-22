@@ -11,5 +11,8 @@ func main() {
 		fmt.Printf("createSsaCallGraph CallGraph error %v\n", err)
 		return
 	}
-	fmt.Printf("createSsaCallGraph callGraph: %v\n", graph)
+	fmt.Println()
+	for function, node := range graph.Nodes {
+		fmt.Printf("function name %s, in %v, out %v\n", function.Name(), node.In, node.Out)
+	}
 }

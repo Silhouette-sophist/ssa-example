@@ -6,6 +6,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/callgraph"
 	"golang.org/x/tools/go/callgraph/cha"
 	"golang.org/x/tools/go/callgraph/rta"
@@ -14,6 +15,7 @@ import (
 	"golang.org/x/tools/go/pointer"
 	"golang.org/x/tools/go/ssa"
 	"golang.org/x/tools/go/ssa/ssautil"
+	"log"
 	"os"
 	"path/filepath"
 	"ssa-example/visitor"
@@ -22,16 +24,33 @@ import (
 
 // CallGraph 获取调用图
 func CallGraph(rootDir string) (*callgraph.Graph, error) {
-	// 0.校验参数
+	// -1.校验参数
 	if rootDir == "" {
 		return nil, errors.New("invalid param")
 	}
-	output, err := ExecGoCommand([]string{"env", "GOMOD"})
+	modFilePath, err := ExecGoCommandWithDir(rootDir, []string{"env", "GOMOD"})
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("mod file path %s\n", output)
-	rootPkg := "gin-example"
+	fmt.Printf("mod file path %s\n", modFilePath)
+	data, err := os.ReadFile(modFilePath)
+	if err != nil {
+		log.Fatalf("Failed to read go.mod: %v", err)
+		return nil, err
+	}
+	modFile, err := modfile.Parse(modFilePath, data, nil)
+	if err != nil {
+		log.Fatalf("Failed to parse go.mod: %v", err)
+		return nil, err
+	}
+	// 匹配模块名
+	fmt.Println("Module Name:", modFile.Module.Mod.Path)
+	// 匹配依赖项
+	fmt.Println("Dependencies:")
+	for _, dep := range modFile.Require {
+		fmt.Printf(" - %s %s\n", dep.Mod.Path, dep.Mod.Version)
+	}
+	rootPkg := modFile.Module.Mod.Path
 	// 1.配置
 	config := &packages.Config{
 		Mode:  packages.LoadAllSyntax,
