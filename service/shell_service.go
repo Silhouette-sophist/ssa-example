@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// ExecGoCommandWithDir 在指定目录下执行go命令
 func ExecGoCommandWithDir(execDir string, args []string) (string, error) {
 	command := exec.Command("go", args...)
 	command.Dir = execDir
