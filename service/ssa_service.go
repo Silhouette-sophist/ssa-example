@@ -43,9 +43,8 @@ func CallGraph(rootDir string) (*callgraph.Graph, error) {
 		log.Fatalf("Failed to parse go.mod: %v", err)
 		return nil, err
 	}
-	// 匹配模块名
+	// 匹配模块名&匹配依赖项
 	fmt.Println("Module Name:", modFile.Module.Mod.Path)
-	// 匹配依赖项
 	fmt.Println("Dependencies:")
 	for _, dep := range modFile.Require {
 		fmt.Printf(" - %s %s\n", dep.Mod.Path, dep.Mod.Version)
@@ -57,23 +56,23 @@ func CallGraph(rootDir string) (*callgraph.Graph, error) {
 		Tests: false,
 		Dir:   rootDir,
 	}
-	// 2.加载包
-	load, err := packages.Load(config)
+	// 2.加载packages包
+	loadPackages, err := packages.Load(config)
 	if err != nil {
-		fmt.Printf("load error %v\n", err)
+		fmt.Printf("loadPackages error %v\n", err)
 		return nil, err
 	}
-	fmt.Printf("load %v\n", load)
-	// 3.加载所有包
-	ssaProgram, ssaPkgs := ssautil.AllPackages(load, 0)
-	fmt.Printf("ssaProgram %v, ssaPkgs %v\n", ssaProgram, ssaPkgs)
+	fmt.Printf("loadPackages %v\n", loadPackages)
+	// 3.加载所有ssa包和ssa程序
+	ssaProgram, ssaPackages := ssautil.AllPackages(loadPackages, 0)
+	fmt.Printf("ssaProgram %v, ssaPackages %v\n", ssaProgram, ssaPackages)
 	// 4.构建ssa程序
 	ssaProgram.Build()
 	// 5.找main包
-	mainPackages := ssautil.MainPackages(ssaPkgs)
+	mainPackages := ssautil.MainPackages(ssaPackages)
 	fmt.Printf("mainPackages %v\n", mainPackages)
 	// 6.查找已经被导入的包信息
-	usedFuncMap := getRepoUsedFuncMap(load, rootPkg, rootDir)
+	usedFuncMap := getRepoUsedFuncMap(loadPackages, rootPkg, rootDir)
 	// 7.创建Ssa调用图
 	g, err := CreateSsaCallGraph("vta", ssaProgram, mainPackages, usedFuncMap)
 	if err != nil {
