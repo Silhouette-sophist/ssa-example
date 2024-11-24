@@ -15,6 +15,12 @@ func main() {
 		return
 	}
 	fmt.Println()
+	customGraph, err := service.ConvertSsaCallGraphToCustomGraph(graph, "gin-example")
+	if err != nil {
+		fmt.Printf("ConvertSsaCallGraphToCustomGraph CallGraph error %v\n", err)
+		return
+	}
+	fmt.Printf("customGraph: %v", customGraph)
 	visitFunc := make(map[int]struct{})
 	// 设置超时
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)

@@ -24,8 +24,3 @@ const (
 	CallIn = iota
 	CallOut
 )
-
-type CallEdge struct {
-	Id   int64
-	Type CallType
-}
