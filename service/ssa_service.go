@@ -361,3 +361,26 @@ func GetStdLib(nodes map[*ssa.Function]*callgraph.Node) map[string]bool {
 	}
 	return make(map[string]bool)
 }
+
+func VisitNode(node *callgraph.Node, visitFunc map[int]struct{}) {
+	if node == nil {
+		fmt.Println("new call graph")
+		return
+	}
+	funcString := node.Func.String()
+	visitFunc[node.ID] = struct{}{}
+	if len(node.In) > 0 {
+		for _, edge := range node.In {
+			fmt.Printf("func: %s, in: %v\t", funcString, edge.String())
+			VisitNode(edge.Callee, visitFunc)
+			VisitNode(edge.Caller, visitFunc)
+		}
+	}
+	if len(node.Out) > 0 {
+		for _, edge := range node.Out {
+			fmt.Printf("func: %s, out: %v\t", funcString, edge.String())
+			VisitNode(edge.Callee, visitFunc)
+			VisitNode(edge.Caller, visitFunc)
+		}
+	}
+}
