@@ -33,6 +33,22 @@ var (
 	anonymousFuncLIneNumRegex = regexp.MustCompile("\\$\\d+\\(")
 )
 
+// CallGraphFacade 获取调用图信息
+func CallGraphFacade(rootDir, rootPkg string) (map[string]*model.Node, error) {
+	if rootDir == "" || rootPkg == "" {
+		return nil, errors.New("invalid param")
+	}
+	graph, err := CallGraph(rootDir)
+	if err != nil {
+		return nil, err
+	}
+	customGraph, err := ConvertSsaCallGraphToCustomGraph(graph, rootPkg)
+	if err != nil {
+		return nil, err
+	}
+	return customGraph.NodeMap, nil
+}
+
 // CallGraph 获取调用图
 func CallGraph(rootDir string) (*callgraph.Graph, error) {
 	// -1.校验参数

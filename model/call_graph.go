@@ -13,7 +13,7 @@ type CallGraph struct {
 type Node struct {
 	NodeKey   string
 	NodeLabel string
-	SsaFunc   *ssa.Function
+	SsaFunc   *ssa.Function `json:"-"`
 	EdgesOut  map[string]*CallEdge
 	EdgesIn   map[string]*CallEdge
 	DiffType  string

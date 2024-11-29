@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"testing"
 	"time"
@@ -40,4 +41,20 @@ func TestCallGraph(t *testing.T) {
 	// 等待goroutine完成或超时
 	<-ctx.Done()
 	fmt.Printf("visitFunc %v", visitFunc)
+}
+
+func TestCallGraphFacade(t *testing.T) {
+	rootDir := "/Users/silhouette/work-practice/gin-example"
+	rootPkg := "gin-example"
+	facade, err := CallGraphFacade(rootDir, rootPkg)
+	if err != nil {
+		t.Errorf("CallGraphFacade error %v", err)
+		return
+	}
+	marshal, err := json.Marshal(facade)
+	if err != nil {
+		t.Errorf("CallGraphFacade marshal error %v", err)
+		return
+	}
+	t.Logf("CallGraphFacade result %v", string(marshal))
 }
