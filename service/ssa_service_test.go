@@ -8,18 +8,19 @@ import (
 )
 
 func TestCallGraph(t *testing.T) {
-	graph, err := CallGraph("/Users/silhouette/work-practice/gin-example")
+	rootDir := "/Users/silhouette/work-practice/gin-example"
+	rootPkg := "gin-example"
+	graph, err := CallGraph(rootDir)
 	if err != nil {
 		fmt.Printf("createSsaCallGraph CallGraph error %v\n", err)
 		return
 	}
-	fmt.Println()
-	customGraph, err := ConvertSsaCallGraphToCustomGraph(graph, "gin-example")
+	customGraph, err := ConvertSsaCallGraphToCustomGraph(graph, rootPkg)
 	if err != nil {
 		fmt.Printf("ConvertSsaCallGraphToCustomGraph CallGraph error %v\n", err)
 		return
 	}
-	fmt.Printf("customGraph: %v", customGraph)
+	fmt.Printf("customGraph: %v", customGraph.NodeMap)
 	visitFunc := make(map[int]struct{})
 	// 设置超时
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)

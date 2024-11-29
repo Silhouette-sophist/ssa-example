@@ -199,6 +199,7 @@ func getAbsPath(filePath string) string {
 func ConvertSsaCallGraphToCustomGraph(callGraph *callgraph.Graph, rootPkg string) (*model.CallGraph, error) {
 	// 1.返回图结构
 	retCallGraph := &model.CallGraph{
+		RootPkg: rootPkg,
 		NodeMap: make(map[string]*model.Node),
 	}
 	// 2.过滤使用到的函数map
