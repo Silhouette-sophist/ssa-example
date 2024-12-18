@@ -40,7 +40,7 @@ func TestCallGraph(t *testing.T) {
 	}()
 	// 等待goroutine完成或超时
 	<-ctx.Done()
-	fmt.Printf("visitFunc %v\n", visitFunc)
+	t.Logf("visitFunc %v", visitFunc)
 }
 
 func TestCallGraphFacade(t *testing.T) {
