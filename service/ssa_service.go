@@ -376,6 +376,7 @@ func GetStdLib(nodes map[*ssa.Function]*callgraph.Node) map[string]bool {
 		}
 		allPackage[function.Pkg.Pkg.Path()] = true
 	}
+	// 标准库的内容，这里先给默认的吧
 	return make(map[string]bool)
 }
 
